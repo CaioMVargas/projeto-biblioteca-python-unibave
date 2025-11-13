@@ -172,6 +172,7 @@ global livros, emprestimos  # No início de cada função
 
 ## ✅ Funcionalidades Obrigatórias
 
+- [x] Criar classes (Caio Vargas)
 - [ ] Cadastrar livro (Bruno)
 - [ ] Listar livros (Bruno)
 - [ ] Editar livro (Bruno)
