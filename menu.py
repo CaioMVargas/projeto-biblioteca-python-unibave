@@ -94,13 +94,52 @@ class Menu:
         # Criar objeto Livro e adicionar na lista livros
         print("\n--- CADASTRAR LIVRO ---")
         print("[Função a ser implementada pelo Bruno]")
-    
+
+        titulo = input("Título do livro: ")
+
+        if not titulo:
+            print("Título do livro é obrigatório")
+            return
+
+        for livro in livros:
+            
+            if livro.titulo.lower() == titulo.lower:
+                print("Já existe um livro com este título!")
+                return
+        
+        autor = input("Autor do livro: ")
+
+        if not autor:
+            print("Autor é obrigatório!")
+            return
+        
+        ano = int(input("Ano de publicação: "))
+        
+        if ano < 0 or ano > 2025:
+            print("Ano inválido!")
+            return
+        
+        livro = Livro(titulo, autor, ano)
+        livros.append(livro)
+        print(f"Livro '{titulo}' cadastrado com sucesso!")
+     
     def listar_livros(self):
         """Lista todos os livros cadastrados."""
         # TODO: Bruno - Implementar listagem de livros
         # Percorrer a lista livros e exibir cada livro
         print("\n--- LIVROS CADASTRADOS ---")
         print("[Função a ser implementada pelo Bruno]")
+
+        if not livros:
+            print("Nenhum livro cadastrado!")
+            return
+    
+        print(f"{'Título':<30} {'Autor':<25} {'Ano':<6} {'Disponível':<10}")
+        print("-" * 75)
+    
+        for i, livro in enumerate(livros, 1):
+            status = "Sim" if livro.disponivel else "Não"
+            print(f"{i:2}. {livro.titulo:<28} {livro.autor:<23} {livro.ano:<6} {status:<10}")
     
     def editar_livro(self):
         """Edita informações de um livro."""
@@ -108,6 +147,46 @@ class Menu:
         # Buscar livro na lista e atualizar seus atributos
         print("\n--- EDITAR LIVRO ---")
         print("[Função a ser implementada pelo Bruno]")
+
+        if not livros:
+            print("Nenhum livro cadastrado para editar.")
+            return
+        
+        #listar livros para escolher
+        self.listar_livros()
+
+        opcao = int((input("\nNúmero do livro a editar: ")))-1
+
+        if opcao < 0 or opcao>=len(livros):
+            print("Número inválido!")
+            return
+        
+        livro = livros[opcao]
+        print(f"\nEditando livro: {livro.titulo}\n")
+
+        novoTitulo = input(f"Novo título: ").strip()
+        novoAutor = input(f"Novo autor: ").strip()
+        novoAno = input(f"Novo ano: ").strip()
+
+        if novoTitulo:
+            for l in livros:
+                if l != livro and l.titulo.lower() == novoTitulo.lower():
+                    print("Já existe outro livro com este título!")
+                    return
+            
+            livro.titulo = novoTitulo
+
+        if novoAutor:
+            livro.autor = novoAutor
+
+        if novoAno:
+            ano = int(novoAno)
+            if ano < 0 or ano > 2025:
+                print("Ano inválido!")
+                return
+            livro.ano = ano
+
+        print("Livro editado com sucesso!")
     
     def remover_livro(self):
         """Remove um livro."""
@@ -115,6 +194,32 @@ class Menu:
         # Verificar se o livro está disponível antes de remover
         print("\n--- REMOVER LIVRO ---")
         print("[Função a ser implementada pelo Bruno]")
+
+        if not livros:
+            print("não há livros cadastrados para remover.")
+            return
+
+        self.listar_livros()
+
+        opcao = int(input("Número do livro a remover: "))-1
+
+        if opcao < 0 or opcao >= len(livros):
+            print("Número inválido!")
+            return
+        
+        livro = livros[opcao]
+
+        if not livro.disponivel:
+            print("Não é possível remover um livro que está emprestado!")
+            return
+        
+        confirmacao = input(f"Tem certeza que deseja remover '{livro.titulo}'? (s/n): ").strip().lower()
+
+        if confirmacao == 's' or confirmacao == 'sim':
+            livros.remove(livro)
+            print("Livro removido com sucesso!")
+        else:
+            print("Remoção cancelada!")
     
     # ==================== FUNÇÕES DE USUÁRIOS ====================
     
