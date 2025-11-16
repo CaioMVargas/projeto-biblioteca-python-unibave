@@ -223,7 +223,7 @@ class Menu:
     
     # ==================== FUNÇÕES DE USUÁRIOS ====================
 
-#Cadastrar usuário    
+ #Arthur   
 def cadastrar_usuario(self):
     """Cadastra um novo usuário."""
     global usuarios
@@ -252,7 +252,7 @@ def cadastrar_usuario(self):
 
     print(f"Usuário '{nome}' cadastrado com sucesso!")
 
-    
+#Arthur    
 def listar_usuarios(self):
     """Lista todos os usuários cadastrados."""
     global usuarios
@@ -269,6 +269,34 @@ def listar_usuarios(self):
     for i, usuario in enumerate(usuarios, 1):
         print(f"{i:<4} {usuario.nome:<30} {usuario.matricula:<15}")
 
+
+    # ==================== FUNÇÕES DE EMPRÉSTIMOS ====================
+    
+    def realizar_emprestimo(self):
+        """Realiza um empréstimo de livro."""
+        # TODO: Sidnei - Implementar empréstimo
+        # - Verificar se o livro está disponível
+        # - Atualizar livro.disponivel = False
+        # - Criar objeto Emprestimo e adicionar na lista emprestimos
+        print("\n--- REALIZAR EMPRÉSTIMO ---")
+        print("[Função a ser implementada pelo Sidnei]")
+    
+    def devolver_livro(self):
+        """Realiza a devolução de um livro."""
+        # TODO: Sidnei - Implementar devolução
+        # - Atualizar livro.disponivel = True
+        # - Atualizar emprestimo.data_devolucao
+        print("\n--- DEVOLVER LIVRO ---")
+        print("[Função a ser implementada pelo Sidnei]")
+    
+    def listar_emprestimos_ativos(self):
+        """Lista todos os empréstimos ativos."""
+        # TODO: Sidnei - Pode implementar como funcionalidade extra
+        print("\n--- EMPRÉSTIMOS ATIVOS ---")
+        print("[Função a ser implementada pelo Sidnei]")
+    
+    # ==================== FUNÇÕES DE RELATÓRIOS ====================
+#Arthur    
 def listar_emprestimos_por_usuario(self):
     """Lista livros emprestados por um usuário."""
     global usuarios, emprestimos
@@ -313,54 +341,6 @@ def listar_emprestimos_por_usuario(self):
     for emp in emprestimos_usuario:
         print(f"{emp.livro.titulo:<30} {emp.data_emprestimo:<20}")
 
-    # ==================== FUNÇÕES DE EMPRÉSTIMOS ====================
-    
-    def realizar_emprestimo(self):
-        """Realiza um empréstimo de livro."""
-        # TODO: Sidnei - Implementar empréstimo
-        # - Verificar se o livro está disponível
-        # - Atualizar livro.disponivel = False
-        # - Criar objeto Emprestimo e adicionar na lista emprestimos
-        print("\n--- REALIZAR EMPRÉSTIMO ---")
-        print("[Função a ser implementada pelo Sidnei]")
-    
-    def devolver_livro(self):
-        """Realiza a devolução de um livro."""
-        # TODO: Sidnei - Implementar devolução
-        # - Atualizar livro.disponivel = True
-        # - Atualizar emprestimo.data_devolucao
-        print("\n--- DEVOLVER LIVRO ---")
-        print("[Função a ser implementada pelo Sidnei]")
-    
-    def listar_emprestimos_ativos(self):
-        """Lista todos os empréstimos ativos."""
-        # TODO: Sidnei - Pode implementar como funcionalidade extra
-        print("\n--- EMPRÉSTIMOS ATIVOS ---")
-        print("[Função a ser implementada pelo Sidnei]")
-    
-    # ==================== FUNÇÕES DE RELATÓRIOS ====================
-    
-    def listar_emprestimos_por_usuario(self):
-        """Lista livros emprestados por um usuário."""
-        # TODO: Arthur - Implementar listagem de livros emprestados por usuário
-        # Percorrer a lista emprestimos e filtrar por usuário
-        print("\n--- LIVROS EMPRESTADOS POR USUÁRIO ---")
-        print("[Função a ser implementada pelo Arthur]")
-    
-    def exibir_historico_usuario(self):
-        """Exibe o histórico completo de empréstimos de um usuário."""
-        # TODO: Arthur - Funcionalidade adicional (opcional)
-        # Exibir histórico completo de empréstimos de um usuário
-        print("\n--- HISTÓRICO DE EMPRÉSTIMOS ---")
-        print("[Função adicional - Arthur pode implementar para bônus]")
-    
-    def listar_emprestimos_atrasados(self):
-        """Lista todos os empréstimos atrasados."""
-        # TODO: Funcionalidade adicional (opcional)
-        # Qualquer pessoa pode implementar para bônus
-        print("\n--- EMPRÉSTIMOS ATRASADOS ---")
-        print("[Função adicional - pode implementar para bônus]")
-    
     # ==================== CONTROLE DE MENUS ====================
     
     def menu_livros(self):
