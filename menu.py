@@ -222,21 +222,97 @@ class Menu:
             print("Remoção cancelada!")
     
     # ==================== FUNÇÕES DE USUÁRIOS ====================
+
+#Cadastrar usuário    
+def cadastrar_usuario(self):
+    """Cadastra um novo usuário."""
+    global usuarios
+
+    print("\n--- CADASTRAR USUÁRIO ---")
+
+    nome = input("Nome do usuário: ").strip()
+    if not nome:
+        print("O nome é obrigatório!")
+        return
+
+    matricula = input("Matrícula do usuário: ").strip()
+    if not matricula:
+        print("A matrícula é obrigatória!")
+        return
+
+    # Verificar matrícula duplicada
+    for usuario in usuarios:
+        if usuario.matricula == matricula:
+            print("Já existe um usuário com essa matrícula!")
+            return
+
+    # Criar usuário
+    novo_usuario = Usuario(nome, matricula)
+    usuarios.append(novo_usuario)
+
+    print(f"Usuário '{nome}' cadastrado com sucesso!")
+
     
-    def cadastrar_usuario(self):
-        """Cadastra um novo usuário."""
-        # TODO: Arthur - Implementar cadastro de usuário
-        # Criar objeto Usuario e adicionar na lista usuarios
-        print("\n--- CADASTRAR USUÁRIO ---")
-        print("[Função a ser implementada pelo Arthur]")
-    
-    def listar_usuarios(self):
-        """Lista todos os usuários cadastrados."""
-        # TODO: Arthur - Implementar listagem de usuários
-        # Percorrer a lista usuarios e exibir cada usuário
-        print("\n--- USUÁRIOS CADASTRADOS ---")
-        print("[Função a ser implementada pelo Arthur]")
-    
+def listar_usuarios(self):
+    """Lista todos os usuários cadastrados."""
+    global usuarios
+
+    print("\n--- USUÁRIOS CADASTRADOS ---")
+
+    if not usuarios:
+        print("Nenhum usuário cadastrado!")
+        return
+
+    print(f"{'N°':<4} {'Nome':<30} {'Matrícula':<15}")
+    print("-" * 50)
+
+    for i, usuario in enumerate(usuarios, 1):
+        print(f"{i:<4} {usuario.nome:<30} {usuario.matricula:<15}")
+
+def listar_emprestimos_por_usuario(self):
+    """Lista livros emprestados por um usuário."""
+    global usuarios, emprestimos
+
+    print("\n--- LIVROS EMPRESTADOS POR USUÁRIO ---")
+
+    if not usuarios:
+        print("Nenhum usuário cadastrado!")
+        return
+
+    # Listar usuários para escolher
+    self.listar_usuarios()
+
+    escolha = input("\nDigite o número do usuário: ").strip()
+    if not escolha.isdigit():
+        print("Opção inválida!")
+        return
+
+    index = int(escolha) - 1
+
+    if index < 0 or index >= len(usuarios):
+        print("Usuário inválido!")
+        return
+
+    usuario_escolhido = usuarios[index]
+
+    # Filtrar empréstimos deste usuário
+    emprestimos_usuario = [
+        emp for emp in emprestimos
+        if emp.usuario == usuario_escolhido and emp.data_devolucao is None
+    ]
+
+    print(f"\n--- Empréstimos ativos de {usuario_escolhido.nome} ---")
+
+    if not emprestimos_usuario:
+        print("Nenhum livro emprestado!")
+        return
+
+    print(f"{'Livro':<30} {'Data Empréstimo':<20}")
+    print("-" * 55)
+
+    for emp in emprestimos_usuario:
+        print(f"{emp.livro.titulo:<30} {emp.data_emprestimo:<20}")
+
     # ==================== FUNÇÕES DE EMPRÉSTIMOS ====================
     
     def realizar_emprestimo(self):
