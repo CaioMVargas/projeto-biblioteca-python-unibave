@@ -93,7 +93,6 @@ class Menu:
         # TODO: Bruno - Implementar cadastro de livro
         # Criar objeto Livro e adicionar na lista livros
         print("\n--- CADASTRAR LIVRO ---")
-        print("[Função a ser implementada pelo Bruno]")
 
         titulo = input("Título do livro: ")
 
@@ -223,123 +222,251 @@ class Menu:
     
     # ==================== FUNÇÕES DE USUÁRIOS ====================
 
- #Arthur   
-def cadastrar_usuario(self):
-    """Cadastra um novo usuário."""
-    global usuarios
+    #Arthur   
+    def cadastrar_usuario(self):
+        """Cadastra um novo usuário."""
+        global usuarios
 
-    print("\n--- CADASTRAR USUÁRIO ---")
+        print("\n--- CADASTRAR USUÁRIO ---")
 
-    nome = input("Nome do usuário: ").strip()
-    if not nome:
-        print("O nome é obrigatório!")
-        return
-
-    matricula = input("Matrícula do usuário: ").strip()
-    if not matricula:
-        print("A matrícula é obrigatória!")
-        return
-
-    # Verificar matrícula duplicada
-    for usuario in usuarios:
-        if usuario.matricula == matricula:
-            print("Já existe um usuário com essa matrícula!")
+        nome = input("Nome do usuário: ").strip()
+        if not nome:
+            print("O nome é obrigatório!")
             return
 
-    # Criar usuário
-    novo_usuario = Usuario(nome, matricula)
-    usuarios.append(novo_usuario)
+        matricula = input("Matrícula do usuário: ").strip()
+        if not matricula:
+            print("A matrícula é obrigatória!")
+            return
 
-    print(f"Usuário '{nome}' cadastrado com sucesso!")
+        # Verificar matrícula duplicada
+        for usuario in usuarios:
+            if usuario.matricula == matricula:
+                print("Já existe um usuário com essa matrícula!")
+                return
 
-#Arthur    
-def listar_usuarios(self):
-    """Lista todos os usuários cadastrados."""
-    global usuarios
+        # Criar usuário
+        novo_usuario = Usuario(nome, matricula)
+        usuarios.append(novo_usuario)
 
-    print("\n--- USUÁRIOS CADASTRADOS ---")
+        print(f"Usuário '{nome}' cadastrado com sucesso!")
 
-    if not usuarios:
-        print("Nenhum usuário cadastrado!")
-        return
+    #Arthur    
+    def listar_usuarios(self):
+        """Lista todos os usuários cadastrados."""
+        global usuarios
 
-    print(f"{'N°':<4} {'Nome':<30} {'Matrícula':<15}")
-    print("-" * 50)
+        print("\n--- USUÁRIOS CADASTRADOS ---")
 
-    for i, usuario in enumerate(usuarios, 1):
-        print(f"{i:<4} {usuario.nome:<30} {usuario.matricula:<15}")
+        if not usuarios:
+            print("Nenhum usuário cadastrado!")
+            return
+
+        print(f"{'N°':<4} {'Nome':<30} {'Matrícula':<15}")
+        print("-" * 50)
+
+        for i, usuario in enumerate(usuarios, 1):
+            print(f"{i:<4} {usuario.nome:<30} {usuario.matricula:<15}")
 
 
     # ==================== FUNÇÕES DE EMPRÉSTIMOS ====================
     
     def realizar_emprestimo(self):
         """Realiza um empréstimo de livro."""
-        # TODO: Sidnei - Implementar empréstimo
-        # - Verificar se o livro está disponível
-        # - Atualizar livro.disponivel = False
-        # - Criar objeto Emprestimo e adicionar na lista emprestimos
+        global livros, usuarios, emprestimos
+
         print("\n--- REALIZAR EMPRÉSTIMO ---")
-        print("[Função a ser implementada pelo Sidnei]")
+
+        if not livros:
+            print("Não há livros cadastrados.")
+            return
+
+        if not usuarios:
+            print("Não há usuários cadastrados.")
+            return
+
+        # Listar livros
+        print("\nLivros cadastrados:")
+        for i, livro in enumerate(livros, 1):
+            status = "Disponível" if livro.disponivel else "Emprestado"
+            print(f"{i}. {livro.titulo} ({livro.autor}) - {status}")
+
+        escolha_livro = input("\nNúmero do livro para emprestar: ").strip()
+        if not escolha_livro.isdigit():
+            print("Opção inválida!")
+            return
+
+        indice_livro = int(escolha_livro) - 1
+        if indice_livro < 0 or indice_livro >= len(livros):
+            print("Livro inválido!")
+            return
+
+        livro_escolhido = livros[indice_livro]
+
+        if not livro_escolhido.disponivel:
+            print("Este livro não está disponível para empréstimo.")
+            return
+
+        # Listar usuários
+        print("\nUsuários cadastrados:")
+        for i, usuario in enumerate(usuarios, 1):
+            print(f"{i}. {usuario.nome} (Matrícula: {usuario.matricula})")
+
+        escolha_usuario = input("\nNúmero do usuário: ").strip()
+        if not escolha_usuario.isdigit():
+            print("Opção inválida!")
+            return
+
+        indice_usuario = int(escolha_usuario) - 1
+        if indice_usuario < 0 or indice_usuario >= len(usuarios):
+            print("Usuário inválido!")
+            return
+
+        usuario_escolhido = usuarios[indice_usuario]
+
+        # Pega o prazo padrão, se existir na classe Emprestimo
+        prazo_dias = getattr(Emprestimo, "PRAZO_PADRAO", 7)
+
+        # Marca o livro como emprestado (usa método da classe, se existir)
+        if hasattr(livro_escolhido, "emprestar"):
+            livro_escolhido.emprestar()
+        else:
+            livro_escolhido.disponivel = False
+
+        # Tenta criar o empréstimo com prazo. Se der erro, cria sem o prazo.
+        try:
+            emprestimo = Emprestimo(livro_escolhido, usuario_escolhido, prazo_dias)
+        except TypeError:
+            emprestimo = Emprestimo(livro_escolhido, usuario_escolhido)
+
+        emprestimos.append(emprestimo)
+
+        print(f"\nEmpréstimo realizado com sucesso!")
+        print(f"Livro: {livro_escolhido.titulo}")
+        print(f"Usuário: {usuario_escolhido.nome}")
     
     def devolver_livro(self):
         """Realiza a devolução de um livro."""
-        # TODO: Sidnei - Implementar devolução
-        # - Atualizar livro.disponivel = True
-        # - Atualizar emprestimo.data_devolucao
+        global emprestimos
+
         print("\n--- DEVOLVER LIVRO ---")
-        print("[Função a ser implementada pelo Sidnei]")
+
+        # Filtra apenas empréstimos ativos (não devolvidos)
+        emprestimos_ativos = []
+        for emp in emprestimos:
+            if hasattr(emp, "esta_ativo"):
+                if emp.esta_ativo():
+                    emprestimos_ativos.append(emp)
+            else:
+                # fallback: se não tiver método, considera ativo quando data_devolucao é None
+                if getattr(emp, "data_devolucao", None) is None:
+                    emprestimos_ativos.append(emp)
+
+        if not emprestimos_ativos:
+            print("Não há empréstimos ativos.")
+            return
+
+        print("\nEmpréstimos ativos:")
+        for i, emp in enumerate(emprestimos_ativos, 1):
+            print(f"{i}. {emp.livro.titulo} - {emp.usuario.nome}")
+
+        escolha = input("\nNúmero do empréstimo para devolver: ").strip()
+        if not escolha.isdigit():
+            print("Opção inválida!")
+            return
+
+        indice = int(escolha) - 1
+        if indice < 0 or indice >= len(emprestimos_ativos):
+            print("Empréstimo inválido!")
+            return
+
+        emprestimo = emprestimos_ativos[indice]
+
+        # Chama o método da classe, se existir
+        if hasattr(emprestimo, "devolver"):
+            emprestimo.devolver()
+        else:
+            # fallback: marca data_devolucao e o livro como disponível
+            from datetime import date
+            emprestimo.data_devolucao = date.today()
+            emprestimo.livro.disponivel = True
+
+        print("\nDevolução registrada com sucesso!")
+        print(f"Livro: {emprestimo.livro.titulo}")
+        print(f"Usuário: {emprestimo.usuario.nome}")
+
     
     def listar_emprestimos_ativos(self):
         """Lista todos os empréstimos ativos."""
-        # TODO: Sidnei - Pode implementar como funcionalidade extra
+        global emprestimos
+
         print("\n--- EMPRÉSTIMOS ATIVOS ---")
-        print("[Função a ser implementada pelo Sidnei]")
+
+        # Filtra ativos
+        emprestimos_ativos = []
+        for emp in emprestimos:
+            if hasattr(emp, "esta_ativo"):
+                if emp.esta_ativo():
+                    emprestimos_ativos.append(emp)
+            else:
+                if getattr(emp, "data_devolucao", None) is None:
+                    emprestimos_ativos.append(emp)
+
+        if not emprestimos_ativos:
+            print("Nenhum empréstimo ativo.")
+            return
+
+        print(f"{'Livro':<30} {'Usuário':<25}")
+        print("-" * 60)
+        for emp in emprestimos_ativos:
+            print(f"{emp.livro.titulo:<30} {emp.usuario.nome:<25}")
+
     
     # ==================== FUNÇÕES DE RELATÓRIOS ====================
-#Arthur    
-def listar_emprestimos_por_usuario(self):
-    """Lista livros emprestados por um usuário."""
-    global usuarios, emprestimos
+    #Arthur    
+    def listar_emprestimos_por_usuario(self):
+        """Lista livros emprestados por um usuário."""
+        global usuarios, emprestimos
 
-    print("\n--- LIVROS EMPRESTADOS POR USUÁRIO ---")
+        print("\n--- LIVROS EMPRESTADOS POR USUÁRIO ---")
 
-    if not usuarios:
-        print("Nenhum usuário cadastrado!")
-        return
+        if not usuarios:
+            print("Nenhum usuário cadastrado!")
+            return
 
-    # Listar usuários para escolher
-    self.listar_usuarios()
+        # Listar usuários para escolher
+        self.listar_usuarios()
 
-    escolha = input("\nDigite o número do usuário: ").strip()
-    if not escolha.isdigit():
-        print("Opção inválida!")
-        return
+        escolha = input("\nDigite o número do usuário: ").strip()
+        if not escolha.isdigit():
+            print("Opção inválida!")
+            return
 
-    index = int(escolha) - 1
+        index = int(escolha) - 1
 
-    if index < 0 or index >= len(usuarios):
-        print("Usuário inválido!")
-        return
+        if index < 0 or index >= len(usuarios):
+            print("Usuário inválido!")
+            return
 
-    usuario_escolhido = usuarios[index]
+        usuario_escolhido = usuarios[index]
 
-    # Filtrar empréstimos deste usuário
-    emprestimos_usuario = [
-        emp for emp in emprestimos
-        if emp.usuario == usuario_escolhido and emp.data_devolucao is None
-    ]
+        # Filtrar empréstimos deste usuário
+        emprestimos_usuario = [
+            emp for emp in emprestimos
+            if emp.usuario == usuario_escolhido and emp.data_devolucao is None
+        ]
 
-    print(f"\n--- Empréstimos ativos de {usuario_escolhido.nome} ---")
+        print(f"\n--- Empréstimos ativos de {usuario_escolhido.nome} ---")
 
-    if not emprestimos_usuario:
-        print("Nenhum livro emprestado!")
-        return
+        if not emprestimos_usuario:
+            print("Nenhum livro emprestado!")
+            return
 
-    print(f"{'Livro':<30} {'Data Empréstimo':<20}")
-    print("-" * 55)
+        print(f"{'Livro':<30} {'Data Empréstimo':<20}")
+        print("-" * 55)
 
-    for emp in emprestimos_usuario:
-        print(f"{emp.livro.titulo:<30} {emp.data_emprestimo:<20}")
+        for emp in emprestimos_usuario:
+            print(f"{emp.livro.titulo:<30} {emp.data_emprestimo:<20}")
 
     # ==================== CONTROLE DE MENUS ====================
     
@@ -409,6 +536,73 @@ def listar_emprestimos_por_usuario(self):
                 print("\n✗ Opção inválida!")
                 self.pausar()
     
+    def exibir_historico_usuario(self):
+        """Mostra o histórico de empréstimos (ativos e devolvidos) de um usuário."""
+        global usuarios, emprestimos
+
+        print("\n--- HISTÓRICO DE EMPRÉSTIMOS DE USUÁRIO ---")
+
+        if not usuarios:
+            print("Nenhum usuário cadastrado!")
+            return
+
+        self.listar_usuarios()
+
+        escolha = input("\nNúmero do usuário: ").strip()
+        if not escolha.isdigit():
+            print("Opção inválida!")
+            return
+
+        indice = int(escolha) - 1
+        if indice < 0 or indice >= len(usuarios):
+            print("Usuário inválido!")
+            return
+
+        usuario_escolhido = usuarios[indice]
+
+        historico = [emp for emp in emprestimos if emp.usuario == usuario_escolhido]
+
+        if not historico:
+            print("Este usuário não possui nenhum empréstimo.")
+            return
+
+        print(f"\nHistórico de {usuario_escolhido.nome}:")
+        print(f"{'Livro':<30} {'Situação':<15}")
+        print("-" * 50)
+
+        for emp in historico:
+            situacao = "Ativo"
+            if hasattr(emp, "esta_ativo"):
+                situacao = "Ativo" if emp.esta_ativo() else "Finalizado"
+            else:
+                if getattr(emp, "data_devolucao", None) is not None:
+                    situacao = "Finalizado"
+
+            print(f"{emp.livro.titulo:<30} {situacao:<15}")
+
+    def listar_emprestimos_atrasados(self):
+        """Lista todos os empréstimos atrasados."""
+        global emprestimos
+
+        print("\n--- EMPRÉSTIMOS ATRASADOS ---")
+
+        atrasados = []
+
+        for emp in emprestimos:
+            if hasattr(emp, "esta_atrasado"):
+                if emp.esta_atrasado():
+                    atrasados.append(emp)
+
+        if not atrasados:
+            print("Não há empréstimos atrasados.")
+            return
+
+        print(f"{'Livro':<30} {'Usuário':<25}")
+        print("-" * 60)
+        for emp in atrasados:
+            print(f"{emp.livro.titulo:<30} {emp.usuario.nome:<25}")
+
+
     def menu_relatorios(self):
         """Controla o menu de relatórios."""
         while True:
